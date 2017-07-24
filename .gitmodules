@@ -1,0 +1,3 @@
+[submodule "src/libcld3"]
+	path = src/libcld3
+	url = https://github.com/google/cld3
