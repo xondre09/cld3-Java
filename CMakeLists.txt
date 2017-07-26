@@ -2,6 +2,7 @@ PROJECT(cld3)
 include(FindProtobuf)
 
 find_package(Protobuf REQUIRED)
+find_package(JNI)
 
 set (PARENT_SCOPE ${PROJECT_SOURCE_DIR})
 
@@ -13,6 +14,7 @@ set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 set(LIBCLD3 src/libcld3/src)
 
 set(TMP ${CMAKE_CURRENT_BINARY_DIR})
+file(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/src/cld_3/protos)
 set(CMAKE_CURRENT_BINARY_DIR ${PROJECT_SOURCE_DIR}/src/cld_3/protos)
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS
@@ -26,8 +28,7 @@ set(CMAKE_CURRENT_BINARY_DIR ${TMP})
 INCLUDE_DIRECTORIES (
     src
     ${LIBCLD3}
-    ${LIBCLD3}/script_span/
-    /usr/lib/jvm/java-7-openjdk-amd64/include/
+    ${JNI_INCLUDE_DIRS}
 )
 
 ADD_LIBRARY(
@@ -114,7 +115,7 @@ TARGET_LINK_LIBRARIES (
 
 # ADD_EXECUTABLE(
 #     language_identifier_main
-#     src/libcld3/src/language_identifier_main.cc
+#     ${LIBCLD3}/language_identifier_main.cc
 # )
 
 # TARGET_LINK_LIBRARIES (
@@ -126,25 +127,25 @@ ENABLE_TESTING()
 
 # ADD_EXECUTABLE (
 #     getonescriptspan_test
-#     src/libcld3/src/script_span/getonescriptspan_test.cc
+#     ${LIBCLD3}/script_span/getonescriptspan_test.cc
 # )
 # ADD_TEST(getonescriptspan_test  getonescriptspan_test)
 # TARGET_LINK_LIBRARIES (getonescriptspan_test cld3)
 
-# ADD_EXECUTABLE (
-#     language_identifier_features_test
-#     src/libcld3/src/language_identifier_features_test.cc
-# )
-# ADD_TEST(language_identifier_features_test  language_identifier_features_test)
-# TARGET_LINK_LIBRARIES (language_identifier_features_test cld3)
+#ADD_EXECUTABLE (
+#    language_identifier_features_test
+#    ${LIBCLD3}/language_identifier_features_test.cc
+#)
+#ADD_TEST(language_identifier_features_test  language_identifier_features_test)
+#TARGET_LINK_LIBRARIES (language_identifier_features_test cld3)
 
-# ADD_EXECUTABLE (
-#     nnet_lang_id_test
-#     src/libcld3/src/nnet_lang_id_test.cc
-#     src/libcld3/src/nnet_lang_id_test_data.cc
-# )
-# ADD_TEST(nnet_lang_id_test nnet_lang_id_test)
-# TARGET_LINK_LIBRARIES (nnet_lang_id_test cld3)
+ADD_EXECUTABLE (
+    nnet_lang_id_test
+    ${LIBCLD3}/nnet_lang_id_test.cc
+    ${LIBCLD3}/nnet_lang_id_test_data.cc
+)
+ADD_TEST(nnet_lang_id_test nnet_lang_id_test)
+TARGET_LINK_LIBRARIES (nnet_lang_id_test cld3)
 # ----
 
 INSTALL (
