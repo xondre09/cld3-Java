@@ -1,5 +1,5 @@
 # Cld3-Java
-Cld3-Java is a JNI connector of CLD3.
+Cld3-Java is a wrapper of [CLD3](https://github.com/google/cld3) for Java.
 
 ## Installation
 ### Debian
