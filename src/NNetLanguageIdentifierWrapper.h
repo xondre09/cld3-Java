@@ -9,10 +9,66 @@ extern "C" {
 #endif
 /*
  * Class:     NNetLanguageIdentifierWrapper
- * Method:    getUnknownLanguage
+ * Method:    findLanguage
+ * Signature: (Ljava/lang/String;)LNNetLanguageIdentifierWrapper/Result;
+ */
+JNIEXPORT jobject JNICALL Java_NNetLanguageIdentifierWrapper_findLanguage
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     NNetLanguageIdentifierWrapper
+ * Method:    findTopNMostFreqLangs
+ * Signature: (Ljava/lang/String;I)[LNNetLanguageIdentifierWrapper/Result;
+ */
+JNIEXPORT jobjectArray JNICALL Java_NNetLanguageIdentifierWrapper_findTopNMostFreqLangs
+  (JNIEnv *, jobject, jstring, jint);
+
+/*
+ * Class:     NNetLanguageIdentifierWrapper
+ * Method:    getUnknown
  * Signature: ()Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_NNetLanguageIdentifierWrapper_getUnknownLanguage
+JNIEXPORT jstring JNICALL Java_NNetLanguageIdentifierWrapper_getUnknown
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     NNetLanguageIdentifierWrapper
+ * Method:    getMinNumBytesToConsider
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_NNetLanguageIdentifierWrapper_getMinNumBytesToConsider
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     NNetLanguageIdentifierWrapper
+ * Method:    getMaxNumBytesToConsider
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_NNetLanguageIdentifierWrapper_getMaxNumBytesToConsider
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     NNetLanguageIdentifierWrapper
+ * Method:    getMaxNumInputBytesToConsider
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_NNetLanguageIdentifierWrapper_getMaxNumInputBytesToConsider
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     NNetLanguageIdentifierWrapper
+ * Method:    getReliabilityThreshold
+ * Signature: ()F
+ */
+JNIEXPORT jfloat JNICALL Java_NNetLanguageIdentifierWrapper_getReliabilityThreshold
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     NNetLanguageIdentifierWrapper
+ * Method:    getReliabilityHrBsThreshold
+ * Signature: ()F
+ */
+JNIEXPORT jfloat JNICALL Java_NNetLanguageIdentifierWrapper_getReliabilityHrBsThreshold
   (JNIEnv *, jclass);
 
 /*
@@ -38,22 +94,6 @@ JNIEXPORT jlong JNICALL Java_NNetLanguageIdentifierWrapper_newNNetLanguageIdenti
  */
 JNIEXPORT void JNICALL Java_NNetLanguageIdentifierWrapper_deleteNNetLanguageIdentifier
   (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     NNetLanguageIdentifierWrapper
- * Method:    findLanguage
- * Signature: (JLjava/lang/String;)LNNetLanguageIdentifierWrapper/Result;
- */
-JNIEXPORT jobject JNICALL Java_NNetLanguageIdentifierWrapper_findLanguage
-  (JNIEnv *, jclass, jlong, jstring);
-
-/*
- * Class:     NNetLanguageIdentifierWrapper
- * Method:    findTopNMostFreqLangs
- * Signature: (JLjava/lang/String;I)[LNNetLanguageIdentifierWrapper/Result;
- */
-JNIEXPORT jobjectArray JNICALL Java_NNetLanguageIdentifierWrapper_findTopNMostFreqLangs
-  (JNIEnv *, jclass, jlong, jstring, jint);
 
 #ifdef __cplusplus
 }
