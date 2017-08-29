@@ -11,24 +11,23 @@ cmake_minimum_required(VERSION 3.7)
 set(CMAKE_CXX_FLAGS "-std=gnu++11 -fPIC")
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
-set(LIBCLD3 src/libcld3/src)
+set(LIBCLD3 src/cld3/src)
+
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cld_3/protos)
 
 set(TMP ${CMAKE_CURRENT_BINARY_DIR})
-file(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/src/cld_3/protos)
-set(CMAKE_CURRENT_BINARY_DIR ${PROJECT_SOURCE_DIR}/src/cld_3/protos)
-
+set(CMAKE_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/cld_3/protos)
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS
     ${LIBCLD3}/feature_extractor.proto
     ${LIBCLD3}/sentence.proto
     ${LIBCLD3}/task_spec.proto
 )
-
 set(CMAKE_CURRENT_BINARY_DIR ${TMP})
 
 INCLUDE_DIRECTORIES (
-    src
     ${LIBCLD3}
     ${JNI_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 ADD_LIBRARY(

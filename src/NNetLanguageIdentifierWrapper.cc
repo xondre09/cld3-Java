@@ -7,12 +7,12 @@
 #include "NNetLanguageIdentifierWrapper.h"
 #include "nnet_language_identifier.h"
 
-#define RESULT_CLASS_NAME "NNetLanguageIdentifierWrapper$Result"
+#define RESULT_CLASS_NAME "cz/vutbr/fit/knot/NNetLanguageIdentifierWrapper$Result"
 #define IDENTIFIER_CPP_PTR "identifierCppPtr"
 
 using chrome_lang_id::NNetLanguageIdentifier;
 
-JNIEXPORT jobject JNICALL Java_NNetLanguageIdentifierWrapper_findLanguage
+JNIEXPORT jobject JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_findLanguage
   (JNIEnv *env, jobject thisObject, jstring text)
 {
     // get pointer to NNetLanguageIdentifier instace
@@ -27,11 +27,13 @@ JNIEXPORT jobject JNICALL Java_NNetLanguageIdentifierWrapper_findLanguage
 
     // New result object
     jclass result_class = env->FindClass(RESULT_CLASS_NAME);
+    if (!result_class) return NULL;
     jmethodID result_init = env->GetMethodID(result_class, "<init>", "(Ljava/lang/String;FZF)V");
+    if (!result_init) return NULL;
     return env->NewObject(result_class, result_init, language, result.probability, result.is_reliable, result.proportion);
 }
 
-JNIEXPORT jobjectArray JNICALL Java_NNetLanguageIdentifierWrapper_findTopNMostFreqLangs
+JNIEXPORT jobjectArray JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_findTopNMostFreqLangs
   (JNIEnv *env, jobject thisObject, jstring text, jint num_langs)
 {
     // get pointer to NNetLanguageIdentifier instace
@@ -57,7 +59,7 @@ JNIEXPORT jobjectArray JNICALL Java_NNetLanguageIdentifierWrapper_findTopNMostFr
   return array;
 }
 
-JNIEXPORT jstring JNICALL Java_NNetLanguageIdentifierWrapper_getUnknown
+JNIEXPORT jstring JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_getUnknown
   (JNIEnv *env, jclass cls)
 {
     (void*)env;
@@ -65,7 +67,7 @@ JNIEXPORT jstring JNICALL Java_NNetLanguageIdentifierWrapper_getUnknown
     return env->NewStringUTF(NNetLanguageIdentifier::kUnknown);
 }
 
-JNIEXPORT jint JNICALL Java_NNetLanguageIdentifierWrapper_getMinNumBytesToConsider
+JNIEXPORT jint JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_getMinNumBytesToConsider
   (JNIEnv *env, jclass cls)
 {
     (void*)env;
@@ -73,7 +75,7 @@ JNIEXPORT jint JNICALL Java_NNetLanguageIdentifierWrapper_getMinNumBytesToConsid
     return (jint)NNetLanguageIdentifier::kMinNumBytesToConsider;
 }
 
-JNIEXPORT jint JNICALL Java_NNetLanguageIdentifierWrapper_getMaxNumBytesToConsider
+JNIEXPORT jint JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_getMaxNumBytesToConsider
   (JNIEnv *env, jclass cls)
 {
     (void*)env;
@@ -81,7 +83,7 @@ JNIEXPORT jint JNICALL Java_NNetLanguageIdentifierWrapper_getMaxNumBytesToConsid
     return (jint)NNetLanguageIdentifier::kMaxNumBytesToConsider;
 }
 
-JNIEXPORT jint JNICALL Java_NNetLanguageIdentifierWrapper_getMaxNumInputBytesToConsider
+JNIEXPORT jint JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_getMaxNumInputBytesToConsider
   (JNIEnv *env, jclass cls)
 {
     (void*)env;
@@ -89,7 +91,7 @@ JNIEXPORT jint JNICALL Java_NNetLanguageIdentifierWrapper_getMaxNumInputBytesToC
     return (jint)NNetLanguageIdentifier::kMaxNumInputBytesToConsider;
 }
 
-JNIEXPORT jfloat JNICALL Java_NNetLanguageIdentifierWrapper_getReliabilityThreshold
+JNIEXPORT jfloat JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_getReliabilityThreshold
   (JNIEnv *env, jclass cls)
 {
     (void*)env;
@@ -97,7 +99,7 @@ JNIEXPORT jfloat JNICALL Java_NNetLanguageIdentifierWrapper_getReliabilityThresh
     return (jfloat)NNetLanguageIdentifier::kReliabilityThreshold;
 }
 
-JNIEXPORT jfloat JNICALL Java_NNetLanguageIdentifierWrapper_getReliabilityHrBsThreshold
+JNIEXPORT jfloat JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_getReliabilityHrBsThreshold
   (JNIEnv *env, jclass cls)
 {
     (void*)env;
@@ -105,7 +107,7 @@ JNIEXPORT jfloat JNICALL Java_NNetLanguageIdentifierWrapper_getReliabilityHrBsTh
     return (jfloat)NNetLanguageIdentifier::kReliabilityHrBsThreshold;
 }
 
-JNIEXPORT jlong JNICALL Java_NNetLanguageIdentifierWrapper_newNNetLanguageIdentifier__
+JNIEXPORT jlong JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_newNNetLanguageIdentifier__
   (JNIEnv *env,  jclass cls)
 {
     (void*)env;
@@ -113,7 +115,7 @@ JNIEXPORT jlong JNICALL Java_NNetLanguageIdentifierWrapper_newNNetLanguageIdenti
     return (jlong)(new NNetLanguageIdentifier());
 }
 
-JNIEXPORT jlong JNICALL Java_NNetLanguageIdentifierWrapper_newNNetLanguageIdentifier__II
+JNIEXPORT jlong JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_newNNetLanguageIdentifier__II
   (JNIEnv *env, jclass cls, jint min_num_bytes, jint max_num_bytes)
 {
     (void*)env;
@@ -121,7 +123,7 @@ JNIEXPORT jlong JNICALL Java_NNetLanguageIdentifierWrapper_newNNetLanguageIdenti
     return (jlong)(new NNetLanguageIdentifier(min_num_bytes, max_num_bytes));
 }
 
-JNIEXPORT void JNICALL Java_NNetLanguageIdentifierWrapper_deleteNNetLanguageIdentifier
+JNIEXPORT void JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_deleteNNetLanguageIdentifier
   (JNIEnv *env, jclass cls, jlong cppPtr)
 {
     (void*)env;

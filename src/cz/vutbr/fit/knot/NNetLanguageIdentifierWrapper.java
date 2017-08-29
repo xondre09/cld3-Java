@@ -1,3 +1,5 @@
+package cz.vutbr.fit.knot;
+
 /**
  * Wrapper of C++ class NNetLanguageIdentifier from project CLD3 (see https://github.com/google/cld3).
  *
@@ -56,7 +58,7 @@ public class NNetLanguageIdentifierWrapper {
         }
     }
 
-    /** 
+    /**
      * Find the most probability language for input text with addition information (see Result).
      *
      * @param cppPtr C++ pointer to an instance of the NNetLanguageIdentifier class as a long data type.
@@ -65,7 +67,7 @@ public class NNetLanguageIdentifierWrapper {
      */
     public native Result findLanguage(String text);
 
-    /** 
+    /**
      * Find the top num_langs most frequent languages for input text. Only the first MaxNumInputBytesToConsider (see getMaxNumInputBytesToConsider) bytes is processed.
      *
      * @param cppPtr C++ pointer to an instance of the NNetLanguageIdentifier class as a long data type.
@@ -78,7 +80,7 @@ public class NNetLanguageIdentifierWrapper {
     // ===========================
     //       GET CONSTANTS
     // ===========================
-    
+
     /**
      * Returns the constant of an unknown language or a failing prediction.
      *
@@ -131,7 +133,7 @@ public class NNetLanguageIdentifierWrapper {
      * @return C++ pointer to an instance of the NNetLanguageIdentifier class as a long data type.
      */
     private static native long newNNetLanguageIdentifier();
-    
+
     /**
      * Constructor of C++ class NNetLanguageIdentifier.
      *
