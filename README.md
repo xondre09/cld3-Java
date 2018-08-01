@@ -5,7 +5,7 @@ Cld3-Java is a wrapper of [CLD3](https://github.com/google/cld3) for Java.
 ### Debian/Ubuntu
 ```
 sudo aptitude install protobuf-compiler libprotobuf-dev cmake
-ant dist
+ant jar
 ```
 ## Example
 ```java
@@ -20,8 +20,8 @@ System.out.println("  probability: " + result.probability);
 System.out.println("  reliable:    " + result.is_reliable);
 System.out.println("  proportion:  " + result.proportion);
 
-String text = "This text is written in English. Text napsaný v češtině";
-NNetLanguageIdentifierWrapper.Result[] results = identifier.findTopNMostFreqLangs(text, 3);
+text = "This text is written in English. Text napsaný v češtině";
+NNetLanguageIdentifierWrapper.Result[] results = identifier.findTopNMostFreqLangs(text, 2);
 
 identifier.dispose();
 ```
