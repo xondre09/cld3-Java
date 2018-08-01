@@ -4,14 +4,14 @@ include(FindProtobuf)
 find_package(Protobuf REQUIRED)
 find_package(JNI)
 
-set (PARENT_SCOPE ${PROJECT_SOURCE_DIR})
+set(PARENT_SCOPE ${PROJECT_SOURCE_DIR})
 
 cmake_minimum_required(VERSION 3.7)
 
 set(CMAKE_CXX_FLAGS "-std=gnu++11 -fPIC")
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
-set(LIBCLD3 src/cld3/src)
+set(LIBCLD3 cld3/src)
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cld_3/protos)
 
@@ -102,15 +102,13 @@ TARGET_LINK_LIBRARIES (
 
 ADD_LIBRARY(
     forcld3 SHARED
-    src/NNetLanguageIdentifierWrapper.cc
+    NNetLanguageIdentifierWrapper.cc
     )
 
 TARGET_LINK_LIBRARIES (
     forcld3
     cld3
 )
-
-# ---
 
 # ADD_EXECUTABLE(
 #     language_identifier_main
@@ -149,5 +147,5 @@ TARGET_LINK_LIBRARIES (nnet_lang_id_test cld3)
 
 INSTALL (
     TARGETS forcld3
-    LIBRARY DESTINATION lib
+    LIBRARY DESTINATION ../../dist
 )

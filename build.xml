@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="cld3-Java" default="jar" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+    <description>
+    </description>
+  
+    <property name="name" value="cld3-java" /> 
+    <property name="src" location="src/" />
+    <property name="src.main" location="${src}/main/" />
+    <property name="src.test" location="${src}/test/" />
+    <property name="build" location="build/" />
+    <property name="build.main" location="${build}/main/" />
+    <property name="build.test" location="${build}/test/" />
+    <property name="doc" location="doc/" />
+    <property name="lib" location="lib/" />
+
+    <path id="classpath">
+        <fileset dir="${lib}" includes="**/*.jar" />
+    </path>
+
+    <target name="init">
+        <mkdir dir="${build}" />
+    </target>
+    
+    <!-- ivy -->
+    <target name="ivy-setupjars" description="retrieve dependencies with ivy">
+        <ivy:retrieve />
+
+        <ivy:cachepath pathid="compile.path" conf="compile" />
+        <ivy:cachepath pathid="runtime.path" conf="runtime" />
+        <ivy:cachepath pathid="test.path" conf="test" />
+    </target>
+  
+    <target name="ivy-clean">
+        <delete dir="${lib}" />
+    </target>
+
+    <!-- tests --> 
+    <target name="ivy-purge">
+        <ivy:cleancache />
+        <delete dir="${lib}" />
+    </target>
+
+    <!-- compile cld3 -->
+    <target name="cmake" depends="init">
+        <mkdir dir="${build.main}/cpp" />
+        <exec executable="cmake" dir="${build.main}/cpp" failonerror="true">
+            <arg line="${src.main}/cpp" />
+        </exec>
+    </target>
+
+    <target name="forcld3" depends="cmake">
+        <exec executable="make" dir="${build.main}/cpp" failonerror="true">
+            <arg line="forcld3" />
+        </exec>
+    </target>
+
+    <!-- compile java -->
+    <target name="compile" depends="init">
+        <mkdir dir="${build.main}/java" />
+        <javac srcdir="${src.main}/java" destdir="${build.main}/java" encoding="UTF-8" includeantruntime="false" />
+    </target>
+
+    <target name="jar" depends="compile,forcld3">
+        <jar jarfile="${name}.jar" basedir="${build.main}/java">
+            <fileset dir="${build.main}/cpp">
+                <include name="*forcld3*" />
+            </fileset>
+        </jar>
+    </target>
+
+    <!-- tests -->
+    <target name="test-compile" depends="init,compile">
+        <mkdir dir="${build.test}/java" />
+        <javac srcdir="${src.test}/java" destdir="${build.test}/java" encoding="UTF-8"  includeantruntime="false">
+            <classpath>
+                <path refid="classpath" />
+                <path location="${build.main}/java" />
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="test" depends="jar,test-compile">
+        <junit printsummary="yes" fork="yes">
+            <classpath>
+                <path refid="classpath" />
+                <path location="${build.test}/java" />
+                <path location="${name}.jar" />
+            </classpath>
+
+            <batchtest fork="yes">
+                <fileset dir="${src.test}/java" includes="**/*Test.java" />
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}" />
+        <delete dir="${doc}" />
+        <delete dir="${name}.jar" />
+    </target>
+
+    <target name="doc">
+        <mkdir dir="${doc}" />
+        <javadoc sourcepath="${src.main.java}" destdir="${doc}" />
+    </target>
+</project>

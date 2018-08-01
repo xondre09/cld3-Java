@@ -1,5 +1,27 @@
 package cz.vutbr.fit.knot;
 
+/*
+ * Copyright 2018 Karel Ondřej.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
 /**
  * Wrapper of C++ class NNetLanguageIdentifier from project CLD3 (see https://github.com/google/cld3).
  *
@@ -7,10 +29,33 @@ package cz.vutbr.fit.knot;
  */
 
 public class NNetLanguageIdentifierWrapper {
-
     /* Load library with JNI interface. */
     static {
-        System.loadLibrary("forcld3");
+        final String nativeLib = "forcld3";
+        final String nativeLibName = System.mapLibraryName(nativeLib);
+    
+        try {
+            System.loadLibrary(nativeLib);
+        } catch (UnsatisfiedLinkError exception) {
+            // inspired by https://github.com/adamheinrich/native-utils
+            try {
+                // create a temporary directory
+                File tmpDir = new File(System.getProperty("java.io.tmpdir"), "native-" + nativeLib + "-" + System.nanoTime());
+                if (!tmpDir.mkdir()) throw new IOException("Failed to create temporary directory.");
+                tmpDir.deleteOnExit();
+                // copy the shared library to the temporary directory
+                File tmpFile = new File(tmpDir, nativeLibName);
+                InputStream srcFile = NNetLanguageIdentifierWrapper.class.getResourceAsStream("/" + nativeLibName);
+                Files.copy(srcFile, tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                tmpFile.deleteOnExit();
+                // load the shared library
+                System.load(tmpFile.getAbsolutePath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (NullPointerException e) {
+                throw new RuntimeException("File '" + nativeLibName + "' was not found inside JAR.");
+            }
+        }
     }
 
     /**
@@ -18,14 +63,14 @@ public class NNetLanguageIdentifierWrapper {
      */
     public static class Result {
         public String language = NNetLanguageIdentifierWrapper.getUnknown();
-        public float probability = 0.f;     //< Language probability.
-        public boolean is_reliable = false; //< If the prediction is reliable
-        public float proportion = 0.f;      //< Proportion of bytes of predicted languages ​​in the text. For findLanguage always 1.f.
+        public float probability = 0.f;    //< Language probability.
+        public boolean isReliable = false; //< If the prediction is reliable
+        public float proportion = 0.f;     //< Proportion of bytes of predicted languages in the text. For findLanguage always 1.f.
 
-        public Result(String language, float probability, boolean is_reliable, float proportion) {
+        public Result(String language, float probability, boolean isReliable, float proportion) {
             this.language = language;
             this.probability = probability;
-            this.is_reliable = is_reliable;
+            this.isReliable = isReliable;
             this.proportion = proportion;
         }
     }
@@ -36,16 +81,16 @@ public class NNetLanguageIdentifierWrapper {
      * Constructor.
      */
     public NNetLanguageIdentifierWrapper() {
-        identifierCppPtr = this.newNNetLanguageIdentifier();
+        identifierCppPtr = NNetLanguageIdentifierWrapper.newNNetLanguageIdentifier();
     }
     /**
      * Constructor.
      *
-     * @param min_num_bytes Minimum number of bytes to make prediction.
-     * @param max_num_bytes Maximum number of bytes to make prediction.
+     * @param minNumBytes Minimum number of bytes to make prediction.
+     * @param maxNumBytes Maximum number of bytes to make prediction.
      */
-    public NNetLanguageIdentifierWrapper(int min_num_bytes, int max_num_bytes) {
-        identifierCppPtr = this.newNNetLanguageIdentifier(min_num_bytes, max_num_bytes);
+    public NNetLanguageIdentifierWrapper(int minNumBytes, int maxNumBytes) {
+        identifierCppPtr = NNetLanguageIdentifierWrapper.newNNetLanguageIdentifier(minNumBytes, maxNumBytes);
     }
 
     /**
@@ -53,7 +98,7 @@ public class NNetLanguageIdentifierWrapper {
      */
     public void dispose() {
         if(identifierCppPtr != 0) {
-            this.deleteNNetLanguageIdentifier(identifierCppPtr);
+            NNetLanguageIdentifierWrapper.deleteNNetLanguageIdentifier(identifierCppPtr);
             identifierCppPtr = 0;
         }
     }
@@ -61,7 +106,6 @@ public class NNetLanguageIdentifierWrapper {
     /**
      * Find the most probability language for input text with addition information (see Result).
      *
-     * @param cppPtr C++ pointer to an instance of the NNetLanguageIdentifier class as a long data type.
      * @param text Input text to process.
      * @return Language of input text.
      */
@@ -70,16 +114,11 @@ public class NNetLanguageIdentifierWrapper {
     /**
      * Find the top num_langs most frequent languages for input text. Only the first MaxNumInputBytesToConsider (see getMaxNumInputBytesToConsider) bytes is processed.
      *
-     * @param cppPtr C++ pointer to an instance of the NNetLanguageIdentifier class as a long data type.
      * @param text Input text to process.
-     * @param num_langs Required number of languages.
+     * @param numLangs Required number of languages.
      * @return Array of the most frequent languages of input text.
      */
-    public native Result[] findTopNMostFreqLangs(String text, int num_langs);
-
-    // ===========================
-    //       GET CONSTANTS
-    // ===========================
+    public native Result[] findTopNMostFreqLangs(String text, int numLangs);
 
     /**
      * Returns the constant of an unknown language or a failing prediction.
@@ -123,10 +162,6 @@ public class NNetLanguageIdentifierWrapper {
      */
     public static native float getReliabilityHrBsThreshold();
 
-    // ==============================================
-    //       C++ CONSTRUCTORS AND DESTRUCTOR
-    // ==============================================
-
     /**
      * Constructor of C++ class NNetLanguageIdentifier.
      *
@@ -137,11 +172,11 @@ public class NNetLanguageIdentifierWrapper {
     /**
      * Constructor of C++ class NNetLanguageIdentifier.
      *
-     * @param min_num_bytes Minimum number of bytes to make prediction.
-     * @param max_num_bytes Maximum number of bytes to make prediction.
+     * @param minNumBytes Minimum number of bytes to make prediction.
+     * @param maxNumBytes Maximum number of bytes to make prediction.
      * @return C++ pointer to an instance of the NNetLanguageIdentifier class as a long data type.
      */
-    private static native long newNNetLanguageIdentifier(int min_num_bytes, int max_num_bytes);
+    private static native long newNNetLanguageIdentifier(int minNumBytes, int maxNumBytes);
 
     /**
      * Destructor of C++ class NNetLanguageIdentifier.

@@ -2,13 +2,10 @@
 Cld3-Java is a wrapper of [CLD3](https://github.com/google/cld3) for Java.
 
 ## Installation
-### Debian
+### Debian/Ubuntu
 ```
 sudo aptitude install protobuf-compiler libprotobuf-dev cmake
-mkdir build
-cd build
-cmake ..
-make
+ant dist
 ```
 ## Example
 ```java

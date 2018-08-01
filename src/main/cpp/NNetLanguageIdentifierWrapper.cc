@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 Karel Ondřej.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
  * JNI interface to C++ class NNetLanguageIdentifier (see (https://github.com/google/cld3).
  *
@@ -20,6 +36,13 @@ JNIEXPORT jobject JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper_f
     jfieldID fid = env->GetFieldID(cls, IDENTIFIER_CPP_PTR, "J");
     NNetLanguageIdentifier* cppPtr = (NNetLanguageIdentifier*)env->GetLongField(thisObject, fid);
 
+    if (!cppPtr) {
+        jclass excCls = env->FindClass("java/lang/NullPointerException");
+        if (!excCls) return NULL;
+        env->ThrowNew(excCls, "");
+        return NULL;
+    }
+
     const char *org = env->GetStringUTFChars(text, NULL);
     const NNetLanguageIdentifier::Result result = cppPtr->FindLanguage(org);
     env->ReleaseStringUTFChars(text, org);
@@ -40,6 +63,13 @@ JNIEXPORT jobjectArray JNICALL Java_cz_vutbr_fit_knot_NNetLanguageIdentifierWrap
     jclass cls = env->GetObjectClass(thisObject);
     jfieldID fid = env->GetFieldID(cls, IDENTIFIER_CPP_PTR, "J");
     NNetLanguageIdentifier* cppPtr = (NNetLanguageIdentifier*)env->GetLongField(thisObject, fid);
+
+    if (!cppPtr) {
+        jclass excCls = env->FindClass("java/lang/NullPointerException");
+        if (!excCls) return NULL;
+        env->ThrowNew(excCls, "");
+        return NULL;
+    }
 
     const char *org = env->GetStringUTFChars(text, NULL);
     const std::vector<NNetLanguageIdentifier::Result> results = cppPtr->FindTopNMostFreqLangs(org, num_langs);

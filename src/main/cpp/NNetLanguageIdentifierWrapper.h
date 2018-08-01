@@ -2,8 +2,8 @@
 #include <jni.h>
 /* Header for class cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper */
 
-#ifndef _Included_NNetLanguageIdentifierWrapper
-#define _Included_NNetLanguageIdentifierWrapper
+#ifndef _Included_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper
+#define _Included_cz_vutbr_fit_knot_NNetLanguageIdentifierWrapper
 #ifdef __cplusplus
 extern "C" {
 #endif
